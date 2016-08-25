@@ -6,8 +6,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,20 +24,17 @@ public class MainActivity extends AppCompatActivity {
     private Allocation mOutAllocation;
     private ScriptC_mono mScript;
 
+    private static final String[] IMAGES = {"960x541", "700x394", "500x281", "300x169"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mBitmapIn = loadBitmap(R.drawable.house);
-        mBitmapOut = Bitmap.createBitmap(mBitmapIn.getWidth(), mBitmapIn.getHeight(),
-                mBitmapIn.getConfig());
-
-        ImageView in = (ImageView) findViewById(R.id.displayInImageView);
-        in.setImageBitmap(mBitmapIn);
+        initSpinner();
 
         final ImageView out = (ImageView) findViewById(R.id.displayOutImageView);
-        out.setImageBitmap(mBitmapOut);
+        //out.setImageBitmap(mBitmapOut);
 
         final TextView resultTextView = (TextView) findViewById(R.id.executionTimeTextView);
 
@@ -57,6 +58,52 @@ public class MainActivity extends AppCompatActivity {
             resultTextView.setText(String.format(getString(R.string.execution_time), result));
         });
 
+    }
+
+    private void initSpinner() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, IMAGES);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        spinner.setAdapter(adapter);
+
+        spinner.setSelection(0);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                int res = R.drawable.house_960_541;
+                switch (position) {
+                    case 0: {
+                        res = R.drawable.house_960_541;
+                        break;
+                    }
+                    case 1: {
+                        res = R.drawable.house_700_394;
+                        break;
+                    }
+                    case 2: {
+                        res = R.drawable.house_500_281;
+                        break;
+                    }
+                    case 3: {
+                        res = R.drawable.house_300_169;
+                        break;
+                    }
+                }
+
+                mBitmapIn = loadBitmap(res);
+                mBitmapOut = Bitmap.createBitmap(mBitmapIn.getWidth(), mBitmapIn.getHeight(),
+                        mBitmapIn.getConfig());
+
+                ImageView in = (ImageView) findViewById(R.id.displayInImageView);
+                in.setImageBitmap(mBitmapIn);
+
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
     }
 
     private void javaMonoChromeFilter() {

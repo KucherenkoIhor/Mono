@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">RenderScriptMono</string>
+    <string name="app_name">Mono</string>
     <string name="renderscript">RenderScript</string>
     <string name="java">Java</string>
     <string name="execution_time">Exеcution time: %d ms</string>
+    <string name="image_size">Image size:</string>
 </resources>
